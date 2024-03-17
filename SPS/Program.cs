@@ -13,6 +13,7 @@ namespace SPS
         static int countWin = 0;
         static int countPlayRound = 0;
         static int countWinRound = 0;
+        static int countDrawRound = 0;
 
 
         static void Main(string[] args)
@@ -22,16 +23,17 @@ namespace SPS
             
             while (true) //Gameloop
             {
+                statistics(nickname, age, countMatch, countWin);
                 Console.Write("Are we ready to go into battle?\n (y - yes/other сharacter(s) - no):");
                 if (Console.ReadLine() == "y")
                 {
-                    statistics(nickname,age, countMatch, countWin);
-                    Console.WriteLine("To win the game, you need to win at least two rounds out of three.");
+                    Console.WriteLine("**To win the game, you need to win at least two rounds out of three.**");
                 }     
                 else exit("Okay", nickname);
 
                 int chooseWeapon;
-                while (true)
+                int chooseAi;
+                while (true) // battle
                 {
                     Console.WriteLine("Which weapon will you choose?");
                     Console.WriteLine($"1. {(Weapon)1}");
@@ -43,11 +45,38 @@ namespace SPS
                         if (Console.ReadLine() == "y") continue;
                         else  exit("Okay", nickname); 
                     }
+                    chooseAi = rnd.Next(1, 4);
 
-                    Console.WriteLine($"--> {(BattleStatus)battle(chooseWeapon, rnd.Next(1, 4))}"); // return Draw/Win/Lose
+                    Console.WriteLine($"--> {(BattleStatus)battle(chooseWeapon, chooseAi)}"); // return Draw/Win/Lose
                     
-                    if (countWinRound == 2 || countPlayRound == 3)
+                    if (countWinRound == 2) 
+                    {
+                        countMatch++;
+                        countWinRound = 0;
+                        countWin++;
+                        countPlayRound = 0;
+                        countDrawRound = 0;
+                        Console.WriteLine($"{nickname} win match");
                         break;
+                    } // win match
+                    if (countDrawRound == 3) 
+                    {
+                        countMatch++;
+                        countWinRound = 0;
+                        countPlayRound = 0;
+                        countDrawRound = 0;
+                        Console.WriteLine($"{nickname} draw match");
+                        break;
+                    } // draw match
+                    if (countPlayRound == 3) 
+                    {
+                        countMatch++;
+                        countWinRound = 0;
+                        countPlayRound = 0;
+                        countDrawRound = 0;
+                        Console.WriteLine($"{nickname} lose match");
+                        break;
+                    }   // lose match            
                 }
 
             }
@@ -100,7 +129,10 @@ namespace SPS
             countPlayRound++;
             Console.WriteLine("Battle!");
             if (player == ai) // Draw
-                return 0;
+            { 
+                countDrawRound++;
+                return 0; 
+            }
             if ((player - ai == -1) || (player - ai == 2)) // Win
             {
                 countWinRound++;
@@ -125,14 +157,6 @@ namespace SPS
             Console.ReadKey();
             Environment.Exit(0);
         }
-
-
-
-
-
-
-
-
 
 
     }
