@@ -13,25 +13,21 @@ namespace SPS
             bool ready = true;
 
             Console.WriteLine("\t\tHello Player!");
-            authorization(ref nickname,ref age, ref ready);
+            authorization(ref nickname,ref age);
             
-            if (age > 12 && ready)
+            if (age > 12)
             {
                 Console.Write("Are we ready to go into battle? (y - yes/other сharacter(s) - no):");
                 if (Console.ReadLine() == "y")
                 {
-                    ready = true;
                     Console.WriteLine("To win the game, you need to win at least two rounds out of three.");
                 }     
-                else ready = false;
+                else exit("Okay", nickname);
             }
             else
             {
-                Console.WriteLine("You're not old enough to play.");
-                ready = false;
-            }
-
-            
+                exit("Sorry but you're not old enough to play.", nickname);
+            }        
             
             while (ready)
             {
@@ -60,17 +56,15 @@ namespace SPS
 
             }
 
-            Console.WriteLine(nickname);
-            Console.WriteLine(age.ToString());
 
-            Console.WriteLine("--------------------------------------------------------------");
-            Console.WriteLine($"Goodbye {nickname}!");
-            Console.ReadKey();
+
+
+            exit("", nickname);
         }
 
 
 
-        static void authorization(ref string  nick, ref int  age, ref bool r)
+        static void authorization(ref string  nick, ref int  age)
         {
             while (true) // Authorization
             {
@@ -79,31 +73,28 @@ namespace SPS
                 if (string.IsNullOrEmpty(nick))
                 {
                     Console.Write("Wrong input! Try again? (y - yes/other сharacter(s) - no): ");
-                    if (Console.ReadLine() == "y")
-                        continue;
-                    else 
-                    {
-                        r = false;
-                        break; 
-                    }
+                    if (Console.ReadLine() == "y") continue;
+                    else  exit("test");
                 }
 
                 Console.Write("Enter your age:");
                 if (!int.TryParse(Console.ReadLine(), out age))
                 {
                     Console.Write("Wrong input! Try again? (y - yes/other сharacter(s) - no): ");
-                    if (Console.ReadLine() == "y")
-                        continue;
-                    else
-                    {
-                        r = false;
-                        break;
-                    }
+                    if (Console.ReadLine() == "y")  continue;
+                    else  exit("test", nick);
                 }
                 break;
             }
         }
 
+        static void exit(string message, string nickname = "Player") 
+        {
+            Console.WriteLine(message);
+            Console.WriteLine($"Goodbye {nickname}!");
+            Console.ReadKey();
+            Environment.Exit(0);
+        }
 
 
 
