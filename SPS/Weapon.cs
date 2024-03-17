@@ -9,7 +9,15 @@ namespace SPS
     enum Weapon
     {
         Stone = 1,
-        Paper = 2,
-        Scissors = 3
+        Scissors = 2,
+        Paper = 3
     }
+
+    enum BattleStatus
+    {
+        Draw = 0,
+        Win = 1,
+        Lose = 2
+    }
+
 }
