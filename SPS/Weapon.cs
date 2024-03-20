@@ -17,7 +17,13 @@ namespace SPS
     {
         Draw = 0,
         Win = 1,
-        Lose = 2
+        Loss = 2
     }
 
+    enum NameAi
+    {
+        Bob = 1,
+        Tom,
+        Karl
+    }
 }

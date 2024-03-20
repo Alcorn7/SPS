@@ -12,33 +12,34 @@ namespace SPS
         static int countMatch = 0;
         static int countWin = 0;
         static int countPlayRound = 0;
-        static int countWinRound = 0;
-        static int countDrawRound = 0;
+        static int countWinOrLoss = 0;
 
 
         static void Main(string[] args)
         {
-            Console.WriteLine("\t\tHello Player!");
+            Console.WriteLine("\t\t\tHello Player!");
             authorization(ref nickname,ref age);
             
             while (true) //Gameloop
             {
+                
                 statistics(nickname, age, countMatch, countWin);
                 Console.Write("Are we ready to go into battle?\n (y - yes/other сharacter(s) - no):");
                 if (Console.ReadLine() == "y")
                 {
-                    Console.WriteLine("**To win the game, you need to win at least two rounds out of three.**");
+                    Console.WriteLine("**To win the game, you need to win at least\n two rounds out of three.**");
                 }     
                 else exit("Okay", nickname);
-
+                Console.Clear();
                 int chooseWeapon;
-                int chooseAi;
+                int chooseAi, nameAi;
+                nameAi = rnd.Next(1, 4);
+                Console.WriteLine("===============================================================");
                 while (true) // battle
                 {
                     Console.WriteLine("Which weapon will you choose?");
-                    Console.WriteLine($"1. {(Weapon)1}");
-                    Console.WriteLine($"2. {(Weapon)2}");
-                    Console.WriteLine($"3. {(Weapon)3}");
+                    Console.WriteLine($"1. {(Weapon)1}\t\t2. {(Weapon)2}\t\t3. {(Weapon)3}");
+
                     if (!int.TryParse(Console.ReadLine(), out chooseWeapon) || chooseWeapon > 3 || chooseWeapon < 1)
                     {
                         Console.Write("Wrong input! Try again?\n (y - yes/other сharacter(s) - no): ");
@@ -46,37 +47,43 @@ namespace SPS
                         else  exit("Okay", nickname); 
                     }
                     chooseAi = rnd.Next(1, 4);
-
-                    Console.WriteLine($"--> {(BattleStatus)battle(chooseWeapon, chooseAi)}"); // return Draw/Win/Lose
                     
-                    if (countWinRound == 2) 
+                    Console.WriteLine($"--> {(BattleStatus)battle(chooseWeapon, chooseAi, nameAi)}"); // return Draw/Win/Lose
+                    Console.WriteLine("--------------------------------------------------------------");
+                    if (countPlayRound == 2 && countWinOrLoss % 2 == 0 && countWinOrLoss != 0) 
                     {
-                        countMatch++;
-                        countWinRound = 0;
-                        countWin++;
+                        if (countWinOrLoss == 2) // two win 
+                        {
+                            Console.WriteLine($"{nickname}, it`s  win match");
+                            countWin++;
+                        }
+                        else // two loss (-2)
+                            Console.WriteLine($"{nickname}, it`s  loss match");
                         countPlayRound = 0;
-                        countDrawRound = 0;
-                        Console.WriteLine($"{nickname} win match");
-                        break;
-                    } // win match
-                    if (countDrawRound == 3) 
-                    {
                         countMatch++;
-                        countWinRound = 0;
-                        countPlayRound = 0;
-                        countDrawRound = 0;
-                        Console.WriteLine($"{nickname} draw match");
                         break;
-                    } // draw match
+                    } // two win or two loss 
+
                     if (countPlayRound == 3) 
                     {
-                        countMatch++;
-                        countWinRound = 0;
+                        switch (countWinOrLoss)
+                        {
+                            case 2 or 1: // win draw win(2)/ draw win win(2) / win loss win(1) / loss win win(1) / draw win draw(1) / draw draw win(1) ...
+                                Console.WriteLine($"{nickname}, it`s  win match");
+                                countWin++;
+                                break;
+                            case -2 or -1:
+                                Console.WriteLine($"{nickname}, it`s  loss match");
+                                break;
+                            case 0: // draw draw draw / win lose draw / lose win draw / win draw lose / lose draw win
+                                Console.WriteLine($"{nickname}, it`s  draw match");
+                                break;
+                        }
+
                         countPlayRound = 0;
-                        countDrawRound = 0;
-                        Console.WriteLine($"{nickname} lose match");
+                        countMatch++;
                         break;
-                    }   // lose match            
+                    }              
                 }
 
             }
@@ -91,6 +98,7 @@ namespace SPS
 
         static void authorization(ref string  nick, ref int  age)
         {
+            Console.WriteLine("===============================================================");
             while (true) // Authorization
             {
                 Console.Write("Enter your nickname:");
@@ -118,27 +126,30 @@ namespace SPS
 
         static void statistics(string nick, int age, int countMatch, int countWin)
         {
-            Console.WriteLine($"Nickname: {nick}");
-            Console.WriteLine($"Age: {age}");
-            Console.WriteLine($"Matches played: {countMatch}");
-            Console.WriteLine($"Wins: {countWin}");
+            Console.WriteLine("===============================================================");
+            Console.WriteLine($"Nickname: {nick} \tAge: {age} \tMatches played: {countMatch}\tWins: {countWin}");
+            Console.WriteLine("===============================================================");
         }
 
-        static int battle(int player, int ai)
+        static int battle(int player, int ai, int nameAi)
         {
             countPlayRound++;
-            Console.WriteLine("Battle!");
+            Console.WriteLine($" {(Weapon)player} ({nickname}) vs {(Weapon)ai} ({(NameAi)nameAi})");
+            
             if (player == ai) // Draw
             { 
-                countDrawRound++;
                 return 0; 
             }
             if ((player - ai == -1) || (player - ai == 2)) // Win
             {
-                countWinRound++;
+                countWinOrLoss++;
                 return 1;
-            }  
-            else return 2; //Lose
+            }
+            else //Loss
+            {
+                countWinOrLoss--;
+                return 2; 
+            } 
 
             /*
              
