@@ -57,7 +57,7 @@ namespace SPS
                         if (Console.ReadLine() == "y") continue;
                         else  exit("Okay", nickname); 
                     }
-                    rnd.Next(1, 4);
+                    chooseAi = rnd.Next(1, 4);
                     
                     Console.WriteLine($"--> {(BattleStatus)battle(chooseWeapon, chooseAi, nameAi)}"); // return Draw/Win/Lose
                     Console.WriteLine("--------------------------------------------------------------");
